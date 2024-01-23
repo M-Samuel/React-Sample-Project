@@ -3,6 +3,12 @@ import './App.css';
 import Home from './components/Home'
 import { StoreContext } from './store/StoreContext'
 import { GenerateStateAndDispatch } from './reducers/RootReducer';
+import AppRouter from './Router'
+import { Link, NavLink, RouterProvider } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import Header from './components/Header';
 
 
 
@@ -11,7 +17,8 @@ function App() {
 
   return (
     <StoreContext.Provider value={store}>
-      <Home></Home>
+      <Header></Header>
+      <RouterProvider router={AppRouter} />
     </StoreContext.Provider>
   );
 }
