@@ -1,8 +1,6 @@
-
+import { useReducer } from 'react'
 import incidentsApi from '../api/incidents'
-export const ALL_INCIDENTS_REQUESTING = 'ALL_INCIDENTS_REQUESTING'
-export const ALL_INCIDENTS_RECEIVING = 'ALL_INCIDENTS_RECEIVING'
-
+import { ALL_INCIDENTS_RECEIVING, ALL_INCIDENTS_REQUESTING } from '../constants/ActionType'
 
 
 export function reducer(state, action) {
@@ -21,9 +19,7 @@ export const initialState = {
     fetching: false
 }
 
-
-export function dispatch_AllIncidents(state, dispatch){
-    incidentsApi.GetAllIncidents(dispatch)
-    .then(_ => console.log)
+export function GenerateStateAndDispatch(){
+    const [state, dispatch] = useReducer(reducer, initialState)
+    return {state: state, dispatch: dispatch}
 }
-
