@@ -1,4 +1,4 @@
-import { ALL_INCIDENTS_RECEIVING, ALL_INCIDENTS_REQUESTING, INCIDENT_RECEIVING, INCIDENT_REQUESTING, ON_SELECTING_INCIDENT } from "../constants/ActionType";
+import { ALL_INCIDENTS_RECEIVING, ALL_INCIDENTS_REQUESTING, INCIDENT_RECEIVING, INCIDENT_REQUESTING, ON_SELECTING_INCIDENT, OPEN_INCIDENT_RECEIVING, OPEN_INCIDENT_REQUESTING } from "../constants/ActionType";
 import { fetchApi } from "../api/helpers";
 import IncidentApi from "../api/incidents"
 
@@ -20,7 +20,16 @@ async function SelectIncident(state, dispatchFunc, selectedIncident){
     )
 }
 
+async function OpenIncident(state, dispatchFunc, formData){
+    await fetchApi(
+        () => IncidentApi.CallApiOpenIncident(formData),
+        () => dispatchFunc({type: OPEN_INCIDENT_REQUESTING}),
+        (value) => dispatchFunc({type: OPEN_INCIDENT_RECEIVING, payload: value})
+    )
+}
+
 export default {
     GetAllIncidents: GetAllIncidents,
-    SelectIncident: SelectIncident
+    SelectIncident: SelectIncident,
+    OpenIncident: OpenIncident
 }

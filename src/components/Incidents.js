@@ -17,6 +17,7 @@ export default function Incidents(){
     return(
          <>
             {state.fetching ? <p>Loading...</p> : <p>Loaded</p>}
+            <OpenIncident></OpenIncident>
             <ListGroup>
                 {state.incidents.map((i,key) => <IncidentData key={key} incident={i}></IncidentData>)}
             </ListGroup>
@@ -64,4 +65,63 @@ function IncidentChangeDetail({detail}){
             <br></br>
         </ListGroup.Item>
     )
+}
+
+function OpenIncident(){
+    const {state, dispatch} = useContext(StoreContext)
+
+    const apiCall = async (formData) => {
+        await Actions.OpenIncident(state, dispatch, formData);
+        await Actions.GetAllIncidents(state, dispatch);
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        console.log(Object.fromEntries(formData));
+        apiCall(formData)
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+          <label>
+            Customer Id:
+            <input type="text" name="CustomerId" />
+          </label>
+          <br />
+          <label>
+            Title:
+            <input type="text" name="Title" />
+          </label>
+          <br />
+          <label>
+            Description:
+            <input type="text" name="Description" />
+          </label>
+          <br />
+          <Button variant="primary" type="submit">Submit</Button>
+          <OpenIncidentErrors badRequestValue={state.openIncidentBadRequestErrors} errors={state.openIncidentErrors}></OpenIncidentErrors>
+          {state.openedIncident !== null ? <Badge bg="success">Success</Badge> : null}
+        </form>
+      );
+}
+
+function OpenIncidentErrors({badRequestValue, errors}){
+    if(!errors && !badRequestValue)
+        return null;
+
+    if(!!badRequestValue){
+        return(
+            <>
+                {badRequestValue.map((error,key) => <p key={key}>{error.message}</p>)}
+            </>
+        )
+    }
+
+    return(
+        <>
+            <Badge bg="danger">Unhandle Error occured</Badge>
+        </>
+    )
+    
 }

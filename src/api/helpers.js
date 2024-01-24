@@ -9,10 +9,13 @@ export async function fetchApi(fetchFunc, dispatchRequestFunc, dispatchReceiving
     };
     if(response.ok)
         value.okValue = await response.json()
-    else if(response.status === '400')
-        value.badRequestValue = await response.json()
-    else
-        value.errorValue = await response.json()
+    else{
+        const error = await response.json()
+        if(response.status === 400 && Array.isArray(error))
+            value.badRequestValue = error
+        else
+            value.errorValue = error
+    }
 
     dispatchReceivingFunc(value);
 }

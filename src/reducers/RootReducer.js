@@ -1,6 +1,6 @@
 import { useReducer } from 'react'
 import incidentsApi from '../api/incidents'
-import { ALL_INCIDENTS_RECEIVING, ALL_INCIDENTS_REQUESTING, INCIDENT_RECEIVING, INCIDENT_REQUESTING, ON_SELECTING_INCIDENT } from '../constants/ActionType'
+import { ALL_INCIDENTS_RECEIVING, ALL_INCIDENTS_REQUESTING, INCIDENT_RECEIVING, INCIDENT_REQUESTING, ON_SELECTING_INCIDENT, OPEN_INCIDENT_RECEIVING, OPEN_INCIDENT_REQUESTING } from '../constants/ActionType'
 
 
 export function reducer(state, action) {
@@ -15,6 +15,19 @@ export function reducer(state, action) {
             return {...state, fetching: true}
         case INCIDENT_RECEIVING:
             return {...state, fetching: false, selectedIncident: action.payload.okValue}
+        case OPEN_INCIDENT_REQUESTING:
+            return {...state, fetching: true, openIncidentBadRequestErrors: null, openedIncident: null, openIncidentErrors: null}
+        case OPEN_INCIDENT_RECEIVING:{
+            if(!!action.payload.okValue)
+                return {...state, fetching: false, openedIncident: action.payload.okValue}
+            else if(!!action.payload.badRequestValue)
+                return {...state, fetching: false, openIncidentBadRequestErrors: action.payload.badRequestValue, openedIncident: null}
+            else if(!!action.payload.errorValue)
+                return {...state, fetching: false, openIncidentErrors: action.payload.errorValue, openedIncident: null}
+            else
+                return state
+        }
+            
         default:
             return state
     }
@@ -23,7 +36,10 @@ export function reducer(state, action) {
 export const initialState = {
     incidents: [],
     fetching: false,
-    selectedIncident: null
+    selectedIncident: null,
+    openedIncident: null,
+    openIncidentBadRequestErrors: null,
+    openIncidentErrors: null
 }
 
 export function GenerateStateAndDispatch(){
